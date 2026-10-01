@@ -19,9 +19,13 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-
-    - name: Maven ile Test ve Derleme
+- name: Maven ile Paketleme (JAR Oluşturma)
       run: |
         cd backend/gs-spring-boot/complete
         chmod +x mvnw
-        ./mvnw clean test
+        ./mvnw clean package
+
+    - name: Docker İmajını Otomatik İnşa Et
+      run: |
+        cd backend/gs-spring-boot/complete
+        docker build -t devops-spring-app:latest .
