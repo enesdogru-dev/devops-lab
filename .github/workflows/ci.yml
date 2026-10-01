@@ -19,7 +19,8 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-- name: Maven ile Paketleme (JAR Oluşturma)
+
+    - name: Maven ile Paketleme (JAR Oluşturma)
       run: |
         cd backend/gs-spring-boot/complete
         chmod +x mvnw
