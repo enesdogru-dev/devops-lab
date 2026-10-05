@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - name: Depodaki Kodları Çek
@@ -27,7 +27,7 @@ jobs:
         ./mvnw clean package
 
     - name: Docker Hub'a Giriş Yap
-      uses: docker/login-action@v2
+      uses: actions/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -38,14 +38,6 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/devops-spring-app:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/devops-spring-app:latest
 
-    # --- BURADAN AŞAĞISI YENİ EKLENDİ (CD AŞAMASI) ---
-    - name: Kubernetes (AWS) Bağlantısını Kur
-      run: |
-        mkdir -p ~/.kube
-        echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-        chmod 600 ~/.kube/config
-
     - name: Yeni İmajı K8s Cluster'ında Canlıya Al
       run: |
-        # Deployment adını kendi K8s projenle değiştirmelisin
-        kubectl rollout restart deployment/spring-boot-deployment
+        kubectl rollout restart deployment/devops-spring-app-deployment
