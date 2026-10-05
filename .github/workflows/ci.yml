@@ -1,4 +1,4 @@
-name: Spring Boot CI
+name: Spring Boot CI/CD
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,3 +37,15 @@ jobs:
         cd backend/gs-spring-boot/complete
         docker build -t ${{ secrets.DOCKER_USERNAME }}/devops-spring-app:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/devops-spring-app:latest
+
+    # --- BURADAN AŞAĞISI YENİ EKLENDİ (CD AŞAMASI) ---
+    - name: Kubernetes (AWS) Bağlantısını Kur
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+        chmod 600 ~/.kube/config
+
+    - name: Yeni İmajı K8s Cluster'ında Canlıya Al
+      run: |
+        # Deployment adını kendi K8s projenle değiştirmelisin
+        kubectl rollout restart deployment/spring-boot-deployment
